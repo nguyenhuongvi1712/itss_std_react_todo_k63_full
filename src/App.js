@@ -1,17 +1,60 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
 
 /* スタイルシート */
-import './styles/main.css';
+import "./styles/main.css";
 
 /* コンポーネント */
-import Todo from './components/Todo';
+import Todo from "./components/Todo";
+import Login from "./components/Login";
+import { auth, storeUserInfo, updateUser } from "./lib/firebase";
 
 function App() {
-  return (
-    <div className="container is-fluid">
-      <Todo />
-    </div>
-  );
+	const [loading, setLoading] = useState(true);
+	const [user, setUser] = useState([]);
+
+	useEffect(() => {
+		auth.onAuthStateChanged(async (user) => {
+			setLoading(false);
+			let newUser = null;
+			if (user) {
+				newUser = await storeUserInfo(user);
+                console.log(newUser);
+			}
+			setUser(newUser);
+		});
+	}, []);
+	const logout = () => {
+		auth.signOut();
+	};
+
+	const HeaderContent = () => {
+		if (user) {
+			return (
+				<div class="navbar-end">
+					<div class="navbar-item">{user.name}</div>
+					<div class="navbar-item">
+						<button
+							class="button is-danger is-light is-small"
+							onClick={logout}
+						>
+							{" "}
+							Logout
+						</button>
+					</div>
+				</div>
+			);
+		} else {
+			return <Login />;
+		}
+	};
+	return (
+		<div className="container is-fluid">
+			<header class="navbar">
+				{loading ? <p>LOADING.....</p> : <HeaderContent />}
+			</header>
+			<div>{user && <Todo />}</div>
+		</div>
+	);
 }
 
 export default App;
