@@ -29,10 +29,16 @@ export const getFirebaseItems = async () => {
 			...doc.data(),
 			id: doc.id,
 		}));
-		return items;
+		return {
+			success: true,
+			items: items
+		}
 	} catch (err) {
 		console.log(err);
-		return [];
+		return {
+			success: false,
+			items: []
+		}
 	}
 };
 
