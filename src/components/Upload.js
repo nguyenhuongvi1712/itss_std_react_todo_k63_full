@@ -12,6 +12,7 @@ function Upload({ userImage, onSletctedImage }) {
 		const imageUrl = await uploadImage(image);
 		onSletctedImage(imageUrl);
 		setImageUrl(imageUrl);
+		setIsModal("")
 	};
 
 	const handleClick = () => {
