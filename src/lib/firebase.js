@@ -113,10 +113,9 @@ export const updateUser = async (user, image) => {
 };
 
 export const uploadImage = async (image) => {
-    const test= firebase.storage()
-	const ref = test.ref().child(`/images/${image.name}`);
 	let downloadUrl = "";
 	try {
+		const ref = firebase.storage().ref().child(`/images/${image.name}`);
 		await ref.put(image);
 		downloadUrl = await ref.getDownloadURL();
 	} catch (err) {
